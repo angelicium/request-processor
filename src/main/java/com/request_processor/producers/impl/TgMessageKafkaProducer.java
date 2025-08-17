@@ -14,11 +14,11 @@ import org.springframework.stereotype.Component;
 public class TgMessageKafkaProducer implements KafkaProducer {
 
     @Autowired
-    private KafkaTemplate<String, MessageDto> kafkaTemplate;
+    private KafkaTemplate<String, String> kafkaTemplate;
 
     @Override
-    public void send(MessageDto messageDto) throws Exception {
-                kafkaTemplate.send("telegram-events", messageDto);
+    public void send(String s) throws Exception {
+                kafkaTemplate.send("telegram-events", s);
         log.info("Сообщение TgMessage успешно отправлено");
     }
 }

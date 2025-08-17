@@ -17,10 +17,10 @@ import java.util.concurrent.CompletableFuture;
 public class PushKafkaProducer implements KafkaProducer {
 
     @Autowired
-    private KafkaTemplate<String, MessageDto> kafkaTemplate;
+    private KafkaTemplate<String, String> kafkaTemplate;
 
     @Override
-    public void send(MessageDto messageDto) throws Exception {
+    public void send(String messageDto) throws Exception {
                 kafkaTemplate.send("push-events", messageDto);
         log.info("Сообщение Push успешно отправлено");
 

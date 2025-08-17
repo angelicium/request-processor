@@ -17,11 +17,11 @@ import java.util.concurrent.CompletableFuture;
 public class SmsKafkaProducer implements KafkaProducer {
 
     @Autowired
-    private KafkaTemplate<String, MessageDto> kafkaTemplate;
+    private KafkaTemplate<String, String> kafkaTemplate;
 
     @Override
-    public void send(MessageDto messageDto) throws Exception {
-                kafkaTemplate.send("sms-events", messageDto);
+    public void send(String s) throws Exception {
+                kafkaTemplate.send("sms-events", s);
         log.info("Сообщение Sms успешно отправлено");
     }
 }

@@ -1,5 +1,7 @@
 package com.request_processor.scheduler;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.request_processor.entity.RequestProcessor;
 import com.request_processor.model.MessageDto;
 import com.request_processor.producers.KafkaProducer;
@@ -36,27 +38,31 @@ public class RequestProcessorScheduler {
     @Qualifier("PushKafkaProducer")
     private KafkaProducer pushKafkaProducer;
 
+    private ObjectMapper objectMapper = new ObjectMapper();
+
     @Scheduled(fixedRate = 1000)
-    public void sendNotification() {
+    public void sendNotification() throws JsonProcessingException {
 
         List<RequestProcessor> requestProcessors = repository.findTop50BySentFalseOrderByCreatedAtAsc();
         for (RequestProcessor requestProcessor : requestProcessors) {
             log.info(requestProcessor.getTopic());
             MessageDto messageDto = new MessageDto(requestProcessor.getTopic(), requestProcessor.getKey(), requestProcessor.getText());
-            // сделать поле
+
+            String s = objectMapper.writeValueAsString(messageDto);
+
             try {
                 switch(requestProcessor.getTopic()) {
                     case "SMS" :
-                        smsKafkaProducer.send();
+                        smsKafkaProducer.send(s);
                         break;
                     case "EMAIL" :
-                        emailKafkaProducer.send("Сообщение успешно отправлено");
+                        emailKafkaProducer.send(s);
                         break;
                     case "PUSH" :
-                        pushKafkaProducer.send("Сообщение успешно отправлено");
+                        pushKafkaProducer.send(s);
                         break;
                     case "TG_MESSAGE" :
-                        tgMessageKafkaProducer.send("Сообщение успешно отправлено");
+                        tgMessageKafkaProducer.send(s);
                         break;
                     }
                 } catch(Exception exception){

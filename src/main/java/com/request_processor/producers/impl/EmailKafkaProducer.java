@@ -14,10 +14,10 @@ import org.springframework.stereotype.Component;
 public class EmailKafkaProducer implements KafkaProducer {
 
     @Autowired
-    private KafkaTemplate<String, MessageDto> kafkaTemplate;
+    private KafkaTemplate<String, String> kafkaTemplate;
 
     @Override
-    public void send(MessageDto messageDto) throws Exception {
+    public void send(String messageDto) throws Exception {
                 kafkaTemplate.send("email-events", messageDto);
         log.info("Сообщение Email успешно отправлено");
     }
